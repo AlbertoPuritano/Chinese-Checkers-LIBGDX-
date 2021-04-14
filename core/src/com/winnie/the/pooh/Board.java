@@ -6,6 +6,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
@@ -101,14 +102,14 @@ public class Board {
                 youSure.setVisible(true);
             }
         });
-        youSure= new Dialog("\nAre you \nsure?",Game.skin);
+        youSure= new Dialog("\n  Are you sure?",Game.skin);
         youSure.getTitleLabel().setStyle(labelStyle);
         yesButton = new TextButton("YES", Game.skin, "default");
-        yesButton.getLabel().setFontScale((float) 1.5);
+        yesButton.getLabel().setFontScale((float) 2);
         noButton = new TextButton("NO", Game.skin, "default");
-        noButton.getLabel().setFontScale((float)1.5);
-        youSure.getTitleTable().add(yesButton).size(100, 100).padLeft(-370).padBottom(-300);
-        youSure.getTitleTable().add(noButton).size(100, 100).padLeft(-150).padBottom(-300);
+        noButton.getLabel().setFontScale((float)2);
+        youSure.getTitleTable().add(yesButton).size(110, 130).padLeft(-640).padBottom(-270);
+        youSure.getTitleTable().add(noButton).size(110, 130).padLeft(-240).padBottom(-270);
         yesButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -124,7 +125,7 @@ public class Board {
             }
         });
         youSure.setVisible(false);
-        youSure.setSize(400,400);
+        youSure.setSize(600,400);
         youSure.setPosition(Game.width/2,Game.height/2,Align.center);
         youSure.setMovable(true);
         stage.addActor(backToMenu);
@@ -140,6 +141,46 @@ public class Board {
                 {
                     getPiece(i).setPlayer(1);
                     getPiece(i).setOriginPlayer(1);
+                    getPiece(10).setOriginPlayer(3);
+                    getPiece(11).setOriginPlayer(3);
+                    getPiece(12).setOriginPlayer(3);
+                    getPiece(13).setOriginPlayer(3);
+                    getPiece(23).setOriginPlayer(3);
+                    getPiece(24).setOriginPlayer(3);
+                    getPiece(25).setOriginPlayer(3);
+                    getPiece(35).setOriginPlayer(3);
+                    getPiece(36).setOriginPlayer(3);
+                    getPiece(46).setOriginPlayer(3);
+                    getPiece(74).setOriginPlayer(4);
+                    getPiece(84).setOriginPlayer(4);
+                    getPiece(85).setOriginPlayer(4);
+                    getPiece(95).setOriginPlayer(4);
+                    getPiece(96).setOriginPlayer(4);
+                    getPiece(97).setOriginPlayer(4);
+                    getPiece(107).setOriginPlayer(4);
+                    getPiece(108).setOriginPlayer(4);
+                    getPiece(109).setOriginPlayer(4);
+                    getPiece(110).setOriginPlayer(4);
+                    getPiece(19).setOriginPlayer(5);
+                    getPiece(20).setOriginPlayer(5);
+                    getPiece(21).setOriginPlayer(5);
+                    getPiece(22).setOriginPlayer(5);
+                    getPiece(32).setOriginPlayer(5);
+                    getPiece(33).setOriginPlayer(5);
+                    getPiece(34).setOriginPlayer(5);
+                    getPiece(44).setOriginPlayer(5);
+                    getPiece(45).setOriginPlayer(5);
+                    getPiece(55).setOriginPlayer(5);
+                    getPiece(65).setOriginPlayer(6);
+                    getPiece(75).setOriginPlayer(6);
+                    getPiece(76).setOriginPlayer(6);
+                    getPiece(86).setOriginPlayer(6);
+                    getPiece(87).setOriginPlayer(6);
+                    getPiece(88).setOriginPlayer(6);
+                    getPiece(98).setOriginPlayer(6);
+                    getPiece(99).setOriginPlayer(6);
+                    getPiece(100).setOriginPlayer(6);
+                    getPiece(101).setOriginPlayer(6);
                 }
                 break;
             case 2:
@@ -147,6 +188,46 @@ public class Board {
                 {
                     getPiece(i).setPlayer(2);
                     getPiece(i).setOriginPlayer(2);
+                    getPiece(10).setOriginPlayer(3);
+                    getPiece(11).setOriginPlayer(3);
+                    getPiece(12).setOriginPlayer(3);
+                    getPiece(13).setOriginPlayer(3);
+                    getPiece(23).setOriginPlayer(3);
+                    getPiece(24).setOriginPlayer(3);
+                    getPiece(25).setOriginPlayer(3);
+                    getPiece(35).setOriginPlayer(3);
+                    getPiece(36).setOriginPlayer(3);
+                    getPiece(46).setOriginPlayer(3);
+                    getPiece(74).setOriginPlayer(4);
+                    getPiece(84).setOriginPlayer(4);
+                    getPiece(85).setOriginPlayer(4);
+                    getPiece(95).setOriginPlayer(4);
+                    getPiece(96).setOriginPlayer(4);
+                    getPiece(97).setOriginPlayer(4);
+                    getPiece(107).setOriginPlayer(4);
+                    getPiece(108).setOriginPlayer(4);
+                    getPiece(109).setOriginPlayer(4);
+                    getPiece(110).setOriginPlayer(4);
+                    getPiece(19).setOriginPlayer(5);
+                    getPiece(20).setOriginPlayer(5);
+                    getPiece(21).setOriginPlayer(5);
+                    getPiece(22).setOriginPlayer(5);
+                    getPiece(32).setOriginPlayer(5);
+                    getPiece(33).setOriginPlayer(5);
+                    getPiece(34).setOriginPlayer(5);
+                    getPiece(44).setOriginPlayer(5);
+                    getPiece(45).setOriginPlayer(5);
+                    getPiece(55).setOriginPlayer(5);
+                    getPiece(65).setOriginPlayer(6);
+                    getPiece(75).setOriginPlayer(6);
+                    getPiece(76).setOriginPlayer(6);
+                    getPiece(86).setOriginPlayer(6);
+                    getPiece(87).setOriginPlayer(6);
+                    getPiece(88).setOriginPlayer(6);
+                    getPiece(98).setOriginPlayer(6);
+                    getPiece(99).setOriginPlayer(6);
+                    getPiece(100).setOriginPlayer(6);
+                    getPiece(101).setOriginPlayer(6);
                 }
                 break;
             case 3:
@@ -244,7 +325,43 @@ public class Board {
     {
         return pieces.get(p);
     }
-    public void draw(SpriteBatch batch,ShapeRenderer shapeRenderer, ArrayList<Integer> possibleMoves)
+    public int getRow(int posizione){
+        if(posizione==0)
+            return 0;
+        if(posizione == 1 || posizione == 2)
+            return 1;
+        if(posizione >= 3 && posizione <= 5)
+            return 2;
+        if(posizione >= 6 && posizione <= 9)
+            return 3;
+        if(posizione >= 10 && posizione <= 22)
+            return 4;
+        if(posizione >= 23 && posizione <= 34)
+            return 5;
+        if(posizione >= 35 && posizione <= 45)
+            return 6;
+        if(posizione >= 46 && posizione <= 55)
+            return 7;
+        if(posizione >= 56 && posizione <= 64)
+            return 8;
+        if(posizione >= 65 && posizione <= 74)
+            return 9;
+        if(posizione >= 75 && posizione <= 85)
+            return 10;
+        if(posizione >= 86 && posizione <= 97)
+            return 11;
+        if(posizione >= 98 && posizione <= 110)
+            return 12;
+        if(posizione >= 111 && posizione <= 114)
+            return 13;
+        if(posizione >= 115 && posizione <= 117)
+            return 14;
+        if(posizione == 118 || posizione == 119)
+            return 15;
+        else
+            return 16;
+    }
+    public void draw(SpriteBatch batch, ShapeRenderer shapeRenderer, ArrayList<Integer> possibleMoves)
     {
         batch.begin();
         batch.draw(background,0,0);
@@ -269,6 +386,40 @@ public class Board {
                     break;
                 case 6:
                     batch.draw(player6,p.x-22,p.y-20);
+                    break;
+            }
+        }
+        if (Checkers.showPrevious!=null) {
+            switch (Checkers.showPrevious.getKey()) {
+                case 1:
+                    Sprite temp = new Sprite(player1);
+                    temp.setPosition(getPiece(Checkers.showPrevious.getValue()).x - 22, getPiece(Checkers.showPrevious.getValue()).y - 20);
+                    temp.draw(batch, (float) 0.4);
+                    break;
+                case 2:
+                    temp = new Sprite(player2);
+                    temp.setPosition(getPiece(Checkers.showPrevious.getValue()).x - 22, getPiece(Checkers.showPrevious.getValue()).y - 20);
+                    temp.draw(batch, (float) 0.4);
+                    break;
+                case 3:
+                    temp = new Sprite(player3);
+                    temp.setPosition(getPiece(Checkers.showPrevious.getValue()).x - 22, getPiece(Checkers.showPrevious.getValue()).y - 20);
+                    temp.draw(batch, (float) 0.4);
+                    break;
+                case 4:
+                    temp = new Sprite(player4);
+                    temp.setPosition(getPiece(Checkers.showPrevious.getValue()).x - 22, getPiece(Checkers.showPrevious.getValue()).y - 20);
+                    temp.draw(batch, (float) 0.4);
+                    break;
+                case 5:
+                    temp = new Sprite(player5);
+                    temp.setPosition(getPiece(Checkers.showPrevious.getValue()).x - 22, getPiece(Checkers.showPrevious.getValue()).y - 20);
+                    temp.draw(batch, (float) 0.4);
+                    break;
+                case 6:
+                    temp = new Sprite(player6);
+                    temp.setPosition(getPiece(Checkers.showPrevious.getValue()).x - 22, getPiece(Checkers.showPrevious.getValue()).y - 20);
+                    temp.draw(batch, (float) 0.4);
                     break;
             }
         }

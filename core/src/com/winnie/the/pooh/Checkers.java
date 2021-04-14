@@ -1,16 +1,26 @@
 package com.winnie.the.pooh;
 
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 
+
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Random;
 
 public class Checkers {
     final private SpriteBatch batch;
@@ -27,6 +37,11 @@ public class Checkers {
     public ShapeRenderer shapeRenderer;
     public Boolean[] AI;
     public Audio audio;
+    public int count=0;
+    public static Pair<Integer,Integer> showPrevious;
+    public boolean endGame;
+    public boolean sleep;
+    Label won;
     public Checkers(int numPlayers, Stage stage, Boolean[] AI, final Audio audio)
     {
         Gdx.input.setCatchKey(Input.Keys.BACK, true);
@@ -41,6 +56,8 @@ public class Checkers {
         possibleMoves= new ArrayList<Integer>();
         jumpMoves=new ArrayList<Integer>();
         onlyJump=-1;
+        endGame=false;
+        sleep=false;
         board.addPlayer(1);
         board.addPlayer(2);
         numPlayers-=2;
@@ -76,6 +93,7 @@ public class Checkers {
         this.audio = audio;
         audio.playNewGame();
         board.turnChanged(playerTurn);
+        showPrevious= new Pair<>(-1,-1);
     }
     public void draw()
     {
@@ -90,15 +108,69 @@ public class Checkers {
         board.draw(batch,shapeRenderer,possibleMoves);
         stage.act();
         stage.draw();
+        if (sleep)
+        {
+            try {
+                Thread.sleep(600);
+                sleep=false;
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
     }
     public Boolean makeMove()
     {
-        if (AI[playerTurn])
-            return AIMove();
+        //if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER))
+        //	System.out.println(getMoves());
+        if (!endGame)
+        {
+            if (AI[playerTurn])
+                AIMove();
+            else
+                humanMove();
+        }
         else
-            return humanMove();
+        {
+            if (won==null)
+            {
+                audio.playWin();
+                FreeTypeFontGenerator fontGenerator=  new FreeTypeFontGenerator(Gdx.files.internal("board/FORTSSH_.ttf"));
+                FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
+                parameter.size = 50;
+                BitmapFont textFont= fontGenerator.generateFont(parameter);
+                Label.LabelStyle labelStyle = new Label.LabelStyle();
+                labelStyle.font = textFont;
+                labelStyle.background= Game.skin.newDrawable("white", 0, 0, 0, 0.4f);
+                won = new Label("Player " + playerTurn + " has won the game! \n Press any key to continue" , labelStyle);
+                switch (playerTurn) {
+                    case 1:
+                        won.setColor(Color.GREEN);
+                        break;
+                    case 2:
+                        won.setColor(Color.ORANGE);
+                        break;
+                    case 3:
+                        won.setColor(Color.YELLOW);
+                        break;
+                    case 4:
+                        won.setColor(Color.RED);
+                        break;
+                    case 5:
+                        won.setColor(Color.BLUE);
+                        break;
+                    case 6:
+                        won.setColor(Color.CYAN);
+                        break;
+                }
+                won.setPosition(480 - 170, 600);
+                stage.addActor(won);
+            }
+            if (Gdx.input.isKeyJustPressed(Input.Keys.ANY_KEY) || Gdx.input.justTouched())
+                return true;
+        }
+        return false;
     }
-    public Boolean winCond(int playerTurn)
+    public Boolean winCond()
     {
         boolean full=true;
         boolean atLeast1=false;
@@ -197,10 +269,10 @@ public class Checkers {
                         {
                             if ((playerTurn==1 || playerTurn==2) &&
                                     (board.getPiece(i).getOriginPlayer()!=1 && board.getPiece(i).getOriginPlayer()!=2) ||
-                            (playerTurn==3 || playerTurn==4) &&
-                                    (board.getPiece(i).getOriginPlayer()!=3 && board.getPiece(i).getOriginPlayer()!=4) ||
-                            (playerTurn==5 || playerTurn==6) &&
-                                    (board.getPiece(i).getOriginPlayer()!=5 && board.getPiece(i).getOriginPlayer()!=6)
+                                    (playerTurn==3 || playerTurn==4) &&
+                                            (board.getPiece(i).getOriginPlayer()!=3 && board.getPiece(i).getOriginPlayer()!=4) ||
+                                    (playerTurn==5 || playerTurn==6) &&
+                                            (board.getPiece(i).getOriginPlayer()!=5 && board.getPiece(i).getOriginPlayer()!=6)
                             )
                                 check=false;
                         }
@@ -225,10 +297,10 @@ public class Checkers {
             }
         }
     }
-    public Boolean humanMove()
+    public void humanMove()
     {
         if (stage.getActors().get(stage.getActors().size-1).isVisible())
-            return false;
+            return;
         Game.input.convertInput();
         for (int i=0; i< 121;i++)
         {
@@ -246,10 +318,14 @@ public class Checkers {
                 }
                 if (selectedPiece!= null && possibleMoves.contains(i) && board.move(selectedPiece,i,playerTurn))
                 {
-                    if (winCond(playerTurn))
+                    showPrevious=new Pair<Integer,Integer>(playerTurn,selectedPiece);
+                    if (winCond())
                     {
-                        audio.playWin();
-                        return true;
+                        endGame=true;
+                        possibleMoves.clear();
+                        jumpMoves.clear();
+                        board.turnChanged(playerTurn);
+                        return;
                     }
                     if (jumpMoves.contains(i))
                     {
@@ -279,17 +355,119 @@ public class Checkers {
                 board.turnChanged(playerTurn);
             }
         }
-        return false;
     }
-    public Boolean AIMove()
+    public ArrayList<Pair<Integer,ArrayList<Integer>>> getMoves()
     {
-
-        System.out.println("TODO");
+        possibleMoves.clear();
+        jumpMoves.clear();
+        ArrayList<Pair<Integer,ArrayList<Integer>>> piecesAndMoves= new ArrayList<>();
+        for (int i=0; i< board.pieces.size();i++)
+        {
+            if (board.getPiece(i).getPlayer()==playerTurn)
+            {
+                selectedPiece=i;
+                calculateMoves();
+                ArrayList<Integer> moves = new ArrayList<>(possibleMoves);
+                if (moves.size()>0)
+                    if (moves.contains(i))
+                        moves.remove(i);
+                HashSet<Integer> temp= new HashSet<>(moves);
+                moves = new ArrayList<Integer>(temp);
+                if (moves.size()>0)
+                    piecesAndMoves.add(new Pair<Integer, ArrayList<Integer>>(i,moves));
+            }
+        }
+        for (int i=0;i<piecesAndMoves.size();i++)
+        {
+            for (int j=0;j<piecesAndMoves.get(i).getValue().size();j++)
+            {
+                selectedPiece=piecesAndMoves.get(i).getValue().get(j);
+                calculateMoves();
+                for (Integer move: jumpMoves)
+                {
+                    if (!piecesAndMoves.get(i).getValue().contains(move))
+                        piecesAndMoves.get(i).getValue().add(move);
+                }
+            }
+        }
+        selectedPiece=null;
+        possibleMoves.clear();
+        jumpMoves.clear();
+        return piecesAndMoves;
+    }
+    public void AIMove()
+    {
+        jumpMoves.clear();
+        possibleMoves.clear();
+        count++;
+        ArrayList<Pair<Integer,ArrayList<Integer>>> moves = getMoves();
+        boolean winMove=false;
+        int init=-1;
+        int pos=-1;
+        ArrayList<Pair<Integer,Integer>> mosse= new ArrayList<>();
+        for (int i=0; i<moves.size();i++)
+            for (Integer j: moves.get(i).getValue())
+            {
+                board.move(moves.get(i).getKey(), j, playerTurn);
+                if (winCond())
+                {
+                    init=moves.get(i).getKey();
+                    pos=j;
+                }
+                board.move(j,moves.get(i).getKey(),playerTurn);
+                mosse.add(new Pair <Integer,Integer> (moves.get(i).getKey(),j));
+            }
+        ArrayList<Pair<Integer,Integer>> bestMoves= new ArrayList<Pair<Integer,Integer>>();
+        ArrayList<Integer> dist= new ArrayList<>();
+        for (int i=0; i<mosse.size();i++)
+            dist.add(new Integer(mosse.get(i).getKey()-mosse.get(i).getValue()));
+        int best= Collections.max(dist);
+        for (int i=0; i<mosse.size();i++)
+            if (dist.get(i)==best)
+                bestMoves.add(new Pair<Integer, Integer>(mosse.get(i).getKey(),mosse.get(i).getValue()));
+        int estremoBasso=999;
+        int estremoAlto=-1;
+        for (int i=0;i<board.pieces.size();i++)
+        {
+            if (board.getPiece(i).getPlayer()==playerTurn)
+            {
+                int r = board.getRow(i);
+                if (r < estremoBasso)
+                    estremoBasso = r;
+                if (r > estremoAlto)
+                    estremoAlto = r;
+            }
+        }
+        int player=playerTurn;
+        int enemy;
+        if (player==1)
+            enemy=2;
+        else
+            enemy=1;
+        Random rowndo= new Random();
+        int random= rowndo.nextInt(bestMoves.size());
+        if (init==-1)
+        {
+            init = bestMoves.get(random).getKey();
+            pos = bestMoves.get(random).getValue();
+        }
+        jumpMoves.clear();
+        possibleMoves.clear();
+        selectedPiece=init;
+        showPrevious=new Pair<Integer,Integer>(playerTurn,init);
+        board.move(init, pos, playerTurn);//pos iniz, fin, p turn
+        if (winCond())
+        {
+            endGame=true;
+            System.out.println(playerTurn);
+            return;
+        }
         playerTurn++;
-        if (playerTurn==numPlayers)
-            playerTurn=2;
+        if (playerTurn==numPlayers+1)
+            playerTurn=1;
         board.turnChanged(playerTurn);
-        return false;
+        possibleMoves.clear();
+        sleep=true;
     }
     public void dispose()
     {
